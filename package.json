@@ -1,0 +1,19 @@
+{
+  "name": "azf-vigo-isi",
+  "version": "1.0.0",
+  "description": "Azure function for communication to ISI-lokal",
+  "scripts": {
+    "test": "echo \"No tests yet...\"",
+    "start": "func start"
+  },
+  "author": {
+    "name": "Rune Moskvil Lyngås",
+    "email": "rune.moskvil.lyngaas@vtfk.no",
+    "url": "https://github.com/runely"
+  },
+  "dependencies": {
+    "axios": "0.23.0",
+    "uuid": "8.3.2",
+    "xml2js": "0.4.23"
+  }
+}
