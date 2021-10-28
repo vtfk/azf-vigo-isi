@@ -4,7 +4,8 @@
   "description": "Azure function for communication to ISI-lokal",
   "scripts": {
     "test": "echo \"No tests yet...\"",
-    "start": "func start"
+    "start": "func start",
+    "publish:test": "func azure functionapp publish test-func-vigo-isi"
   },
   "author": {
     "name": "Rune Moskvil Lyngås",
