@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"No tests yet...\"",
     "start": "func start",
-    "publish:test": "func azure functionapp publish test-func-vigo-isi"
+    "publish:test": "func azure functionapp publish test-func-vigo-isi",
+    "publish:prod": "func azure functionapp publish prod-func-vigo-isi-api-v1"
   },
   "author": {
     "name": "Rune Moskvil Lyngås",
