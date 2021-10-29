@@ -25,7 +25,7 @@ module.exports = async function (context, req) {
       counter,
       increment: 1
     })
-    
+
     const status = hasData(response) ? hasException(response) ? 218 : 500 : 200 // TODO: Figure out which 4xx code Logic App retry policy doesn't act on
     logger('info', ['Status', status, 'finish'])
     return {
