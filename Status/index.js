@@ -5,7 +5,7 @@ const setStatus = require('../lib/isi-lokal')
 const { getVariables, updateVariables } = require('../lib/handle-variables')
 
 const hasData = data => Object.getOwnPropertyNames(data).length > 0
-const hasException = data => hasData(data) && data.Feiltype === 'EXCEPTION I STATUSOPPDATERING'
+const hasException = data => hasData(data) && data.Feiltype === 'EXCEPTION I STATUSOPPDATERING' && data.DetaljertBeskrivelse.includes('Message handling of') && data.DetaljertBeskrivelse.includes('already completed')
 
 module.exports = async function (context, req) {
   logConfig({
