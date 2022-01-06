@@ -15,5 +15,6 @@ module.exports = {
   },
   DEMO: (process.env.DEMO && process.env.DEMO.toLowerCase() === 'true') || false,
   DOC_COUNT: process.env.DOC_COUNT,
-  COUNTY: process.env.COUNTY
+  COUNTY: process.env.COUNTY,
+  DISABLE_LOGGING: (process.env.PAPERTRAIL_DISABLE_LOGGING && process.env.PAPERTRAIL_DISABLE_LOGGING.toLowerCase() === 'true') || false
 }

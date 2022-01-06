@@ -1,5 +1,5 @@
 const { logConfig, logger } = require('@vtfk/logger')
-const { DEMO } = require('../config')
+const { DEMO, DISABLE_LOGGING } = require('../config')
 const { statusRequest } = require('../lib/generate-request')
 const setStatus = require('../lib/isi-lokal')
 const { getVariables, updateVariables } = require('../lib/handle-variables')
@@ -9,7 +9,10 @@ const hasException = data => hasData(data) && data.Feiltype === 'EXCEPTION I STA
 
 module.exports = async function (context, req) {
   logConfig({
-    prefix: DEMO ? 'DEMO' : ''
+    prefix: DEMO ? 'DEMO' : '',
+    remote: {
+      disabled: DISABLE_LOGGING
+    }
   })
 
   try {

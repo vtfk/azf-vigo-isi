@@ -1,12 +1,15 @@
 const { logConfig, logger } = require('@vtfk/logger')
-const { DEMO } = require('../config')
+const { DEMO, DISABLE_LOGGING } = require('../config')
 const { documentsRequest } = require('../lib/generate-request')
 const getDocuments = require('../lib/isi-lokal')
 const { getVariables, updateVariables } = require('../lib/handle-variables')
 
 module.exports = async function (context, req) {
   logConfig({
-    prefix: DEMO ? 'DEMO' : ''
+    prefix: DEMO ? 'DEMO' : '',
+    remote: {
+      disabled: DISABLE_LOGGING
+    }
   })
 
   try {
