@@ -3,6 +3,7 @@ const { DEMO, DISABLE_LOGGING } = require('../config')
 const { documentsRequest } = require('../lib/generate-request')
 const getDocuments = require('../lib/isi-lokal')
 const { getVariables, updateVariables } = require('../lib/handle-variables')
+const { save } = require('@vtfk/azure-blob-client')
 
 module.exports = async function (context, req) {
   logConfig({
@@ -25,12 +26,24 @@ module.exports = async function (context, req) {
       increment: response.length + 1
     })
 
-    // hent annen drit fra database og fyll ut på hvert dokument (fortsatt aktuelt?)
+    // dytt alle dokumenter til blob (bob)
+    let blobbedCount = 0
+    for (const document of response) {
+      try {
+        await save(`queue/${document.Dokumentelement.Dokumenttype}_${document.Dokumentelement.DokumentId}_${document.Fodselsnummer}.json`, JSON.stringify(document, null, 2))
+        blobbedCount++
+      } catch (error) {
+        logger('error', ['GetDocuments', 'upload to blob failed', document.Dokumentelement.Dokumenttype, document.Dokumentelement.DokumentId, document.Fodselsnummer])
+      }
+    }
 
     logger('info', ['GetDocuments', 'finish'])
     return {
       status: 200,
-      body: response
+      body: {
+        success: blobbedCount,
+        failed: response.length - blobbedCount
+      }
     }
   } catch (error) {
     logger('error', ['GetDocuments', 'error', error])

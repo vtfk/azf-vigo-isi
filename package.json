@@ -14,6 +14,7 @@
     "url": "https://github.com/runely"
   },
   "dependencies": {
+    "@vtfk/azure-blob-client": "0.0.4",
     "@vtfk/logger": "4.0.1",
     "axios": "0.24.0",
     "mssql": "7.3.0",
