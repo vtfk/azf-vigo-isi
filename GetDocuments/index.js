@@ -5,6 +5,8 @@ const getDocuments = require('../lib/isi-lokal')
 const { getVariables, updateVariables } = require('../lib/handle-variables')
 const { save } = require('@vtfk/azure-blob-client')
 
+const isEmptyDocument = documents => documents.length === 1 && documents[0].Fodselsnummer === '' && documents[0].Dokumentelement.Dokumenttype === ''
+
 module.exports = async function (context, req) {
   logConfig({
     prefix: DEMO ? 'DEMO' : '',
@@ -26,7 +28,20 @@ module.exports = async function (context, req) {
       increment: response.length + 1
     })
 
-    // dytt alle dokumenter til blob (bob)
+    // hvis dette er ett tomt dokument, mas litt om det og avslutt
+    if (isEmptyDocument(response)) {
+      logger('warn', ['GetDocuments', 'empty document from vigo-lokal'])
+      logger('info', ['GetDocuments', 'finish'])
+      return {
+        status: 200,
+        body: {
+          success: 0,
+          failed: 0
+        }
+      }
+    }
+
+    // dytt alle dokumenter til blob
     let blobbedCount = 0
     for (const document of response) {
       try {
