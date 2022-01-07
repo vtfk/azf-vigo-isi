@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Azure function for communication to ISI-lokal",
   "scripts": {
-    "test": "echo \"No tests yet...\"",
+    "test": "standard",
     "start": "func start",
     "publish:test": "func azure functionapp publish test-func-vigo-isi",
     "publish:prod": "func azure functionapp publish prod-func-vigo-isi-api-v1"
@@ -20,5 +20,8 @@
     "mssql": "7.3.0",
     "uuid": "8.3.2",
     "xml2js": "0.4.23"
+  },
+  "devDependencies": {
+    "standard": "16.0.4"
   }
 }
