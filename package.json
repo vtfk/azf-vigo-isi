@@ -4,9 +4,7 @@
   "description": "Azure function for communication to ISI-lokal",
   "scripts": {
     "test": "standard",
-    "start": "func start",
-    "publish:test": "func azure functionapp publish test-func-vigo-isi",
-    "publish:prod": "func azure functionapp publish prod-func-vigo-isi-api-v1"
+    "start": "func start"
   },
   "author": {
     "name": "Rune Moskvil Lyngås",
