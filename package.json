@@ -1,6 +1,6 @@
 {
   "name": "azf-vigo-isi",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Azure function for communication to ISI-lokal",
   "scripts": {
     "test": "standard",
