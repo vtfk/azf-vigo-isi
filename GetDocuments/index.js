@@ -17,6 +17,19 @@ module.exports = async function (context, req) {
 
   try {
     logger('info', ['GetDocuments', 'start'])
+
+    if (req.query.onlyBlobRun && req.query.onlyBlobRun.toLowerCase() === 'true') {
+      logger('info', ['GetDocuments', 'only blob run activated', 'will not contact VIGO'])
+      logger('info', ['GetDocuments', 'finish'])
+      return {
+        status: 200,
+        body: {
+          success: 0,
+          failed: 0
+        }
+      }
+    }
+
     const { uuid, counter, docCount, county } = await getVariables()
     const request = documentsRequest(uuid, counter, docCount, county)
     const response = await getDocuments('GET', request)
