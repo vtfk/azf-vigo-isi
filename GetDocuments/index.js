@@ -56,8 +56,13 @@ module.exports = async function (context, req) {
 
     // dytt alle dokumenter til blob
     let blobbedCount = 0
-    for (const document of response) {
+    for (let document of response) {
       try {
+        document = {
+          ...document,
+          nextRun: '',
+          retryCount: 0
+        }
         await save(`queue/${document.Dokumentelement.Dokumenttype}_${document.Dokumentelement.DokumentId}_${document.Fodselsnummer}.json`, JSON.stringify(document, null, 2))
         blobbedCount++
       } catch (error) {
