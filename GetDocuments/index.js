@@ -1,9 +1,10 @@
 const { logConfig, logger } = require('@vtfk/logger')
+const { save } = require('@vtfk/azure-blob-client')
 const { DEMO, DISABLE_LOGGING } = require('../config')
 const { documentsRequest } = require('../lib/generate-request')
 const getDocuments = require('../lib/isi-lokal')
 const { getVariables, updateVariables } = require('../lib/handle-variables')
-const { save } = require('@vtfk/azure-blob-client')
+const createJob = require('../lib/create-e18-job')
 
 const isEmptyDocument = documents => documents.length === 1 && documents[0].Fodselsnummer === '' && documents[0].Dokumentelement.Dokumenttype === ''
 
@@ -58,11 +59,18 @@ module.exports = async function (context, req) {
     let blobbedCount = 0
     for (let document of response) {
       try {
+        // add "nextRun" and "retryCount" to document
         document = {
           ...document,
           nextRun: '',
           retryCount: 0
         }
+        // create e18 job for this document
+        const jobId = await createJob()
+        if (jobId) {
+          document.e18JobId = jobId
+        }
+
         await save(`queue/${document.Dokumentelement.Dokumenttype}_${document.Dokumentelement.DokumentId}_${document.Fodselsnummer}.json`, JSON.stringify(document, null, 2))
         blobbedCount++
       } catch (error) {

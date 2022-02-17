@@ -16,5 +16,12 @@ module.exports = {
   DEMO: (process.env.DEMO && process.env.DEMO.toLowerCase() === 'true') || false,
   DOC_COUNT: process.env.DOC_COUNT,
   COUNTY: process.env.COUNTY,
-  DISABLE_LOGGING: (process.env.PAPERTRAIL_DISABLE_LOGGING && process.env.PAPERTRAIL_DISABLE_LOGGING.toLowerCase() === 'true') || false
+  DISABLE_LOGGING: (process.env.PAPERTRAIL_DISABLE_LOGGING && process.env.PAPERTRAIL_DISABLE_LOGGING.toLowerCase() === 'true') || false,
+  E18_URL: process.env.E18_URL,
+  E18_KEY: process.env.E18_KEY,
+  E18: {
+    SYSTEM: process.env.E18_JOB_SYSTEM,
+    PROJECT_ID: Number.isInteger(Number.parseInt(process.env.E18_JOB_PROJECT_ID)) ? Number.parseInt(process.env.E18_JOB_PROJECT_ID) : 0,
+    TYPE: process.env.E18_JOB_TYPE
+  }
 }
