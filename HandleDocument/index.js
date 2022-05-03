@@ -38,7 +38,7 @@ module.exports = async function (context, req) {
       await remove(blobPath)
       return {
         status: 200,
-        body: { 
+        body: {
           message: 'Success. Blob removed'
         }
       }
@@ -51,8 +51,8 @@ module.exports = async function (context, req) {
         await remove(blobPath)
         return {
           status: 429,
-          body: { 
-            message: `RetryCount exceeded. Blob moved to error`,
+          body: {
+            message: 'RetryCount exceeded. Blob moved to error',
             retryCount: blobData.retryCount,
             maxRetries: RETRY_MAX_COUNT
           }
@@ -66,7 +66,7 @@ module.exports = async function (context, req) {
       await save(blobPath, JSON.stringify(blobData))
       return {
         status: 406,
-        body: { 
+        body: {
           message: 'RetryCount incremented. Will try again',
           nextRun,
           retryCount: blobData.retryCount,
