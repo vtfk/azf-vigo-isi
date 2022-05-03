@@ -1,5 +1,6 @@
 const { logConfig, logger } = require('@vtfk/logger')
 const { save } = require('@vtfk/azure-blob-client')
+const { readdirSync } = require('fs')
 const { DEMO, DISABLE_LOGGING } = require('../config')
 const { documentsRequest } = require('../lib/generate-request')
 const getDocuments = require('../lib/isi-lokal')
@@ -31,26 +32,35 @@ module.exports = async function (context, req) {
       }
     }
 
-    const { uuid, counter, docCount, county } = await getVariables()
-    const request = documentsRequest(uuid, counter, docCount, county)
-    const response = await getDocuments('GET', request)
+    let response
+    if (DEMO) {
+      // create some blobs in queue
+      const demoResponse = []
+      const files = readdirSync('./mock')
+      files.forEach(file => demoResponse.push(require(`../mock/${file}`)))
+      response = demoResponse
+    } else {
+      const { uuid, counter, docCount, county } = await getVariables()
+      const request = documentsRequest(uuid, counter, docCount, county)
+      response = await getDocuments('GET', request)
 
-    // increase counter with response.length and 1 for the fetch request itself
-    await updateVariables({
-      uuid,
-      counter,
-      increment: response.length + 1
-    })
+      // increase counter with response.length and 1 for the fetch request itself
+      await updateVariables({
+        uuid,
+        counter,
+        increment: response.length + 1
+      })
 
-    // hvis dette er ett tomt dokument, mas litt om det og avslutt
-    if (isEmptyDocument(response)) {
-      logger('warn', ['GetDocuments', 'empty document from vigo-lokal'])
-      logger('info', ['GetDocuments', 'finish'])
-      return {
-        status: 200,
-        body: {
-          success: 0,
-          failed: 0
+      // hvis dette er ett tomt dokument, mas litt om det og avslutt
+      if (isEmptyDocument(response)) {
+        logger('warn', ['GetDocuments', 'empty document from vigo-lokal'])
+        logger('info', ['GetDocuments', 'finish'])
+        return {
+          status: 200,
+          body: {
+            success: 0,
+            failed: 0
+          }
         }
       }
     }
