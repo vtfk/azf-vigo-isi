@@ -1,10 +1,8 @@
 const { logConfig, logger } = require('@vtfk/logger')
 const { DEMO, DISABLE_LOGGING } = require('../config')
-const { statusRequest } = require('../lib/generate-request')
-const setStatus = require('../lib/isi-lokal')
-const { getVariables, updateVariables } = require('../lib/handle-variables')
+const setStatus = require('../lib/update-vigo-status')
+const hasData = require('../lib/has-data')
 
-const hasData = data => Object.getOwnPropertyNames(data).length > 0
 const hasException = data => hasData(data) && data.Feiltype === 'EXCEPTION I STATUSOPPDATERING' && data.DetaljertBeskrivelse.includes('Message handling of') && data.DetaljertBeskrivelse.includes('already completed')
 
 module.exports = async function (context, req) {
@@ -18,16 +16,7 @@ module.exports = async function (context, req) {
   try {
     logger('info', ['Status', 'start'])
     const { docId, ssn } = req.body
-    const { uuid, counter } = await getVariables()
-    const request = statusRequest(uuid, counter, docId, ssn)
-    const response = await setStatus('SET', request)
-
-    // increase counter with 1 for the fetch request itself
-    await updateVariables({
-      uuid,
-      counter,
-      increment: 1
-    })
+    const response = await setStatus(docId, ssn)
 
     const status = hasData(response) ? hasException(response) ? 218 : 500 : 200 // TODO: Figure out which 4xx code Logic App retry policy doesn't act on
     logger('info', ['Status', status, 'finish'])

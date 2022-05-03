@@ -4,7 +4,7 @@ const { DEMO, DISABLE_LOGGING } = require('../config')
 const { documentsRequest } = require('../lib/generate-request')
 const getDocuments = require('../lib/isi-lokal')
 const { getVariables, updateVariables } = require('../lib/handle-variables')
-const createJob = require('../lib/create-e18-job')
+const { createJob } = require('../lib/e18')
 
 const isEmptyDocument = documents => documents.length === 1 && documents[0].Fodselsnummer === '' && documents[0].Dokumentelement.Dokumenttype === ''
 
@@ -59,6 +59,8 @@ module.exports = async function (context, req) {
     let blobbedCount = 0
     for (let document of response) {
       try {
+        const blobName = `${document.Dokumentelement.Dokumenttype}_${document.Dokumentelement.DokumentId}`
+
         // add "nextRun" and "retryCount" to document
         document = {
           ...document,
@@ -66,12 +68,12 @@ module.exports = async function (context, req) {
           retryCount: 0
         }
         // create e18 job for this document
-        const jobId = await createJob()
+        const jobId = await createJob(blobName)
         if (jobId) {
           document.e18JobId = jobId
         }
 
-        await save(`queue/${document.Dokumentelement.Dokumenttype}_${document.Dokumentelement.DokumentId}_${document.Fodselsnummer}.json`, JSON.stringify(document, null, 2))
+        await save(`queue/${blobName}.json`, JSON.stringify(document, null, 2))
         blobbedCount++
       } catch (error) {
         logger('error', ['GetDocuments', 'upload to blob failed', document.Dokumentelement.Dokumenttype, document.Dokumentelement.DokumentId, document.Fodselsnummer])
