@@ -14,8 +14,8 @@ module.exports = async function (context, req) {
   })
 
   // get blob and blob type
-  const blobPath = `queue/${blobId}.json`
-  const errorBlobPath = `error/${blobId}.json`
+  const blobPath = `queue/${blobId}`
+  const errorBlobPath = `error/${blobId}`
   const { data } = await get(blobPath)
   let blobData = typeof data === 'string' ? JSON.parse(data) : data
   const blobType = blobData.Dokumentelement.Dokumenttype
