@@ -11,6 +11,12 @@
     "email": "rune.moskvil.lyngaas@vtfk.no",
     "url": "https://github.com/runely"
   },
+  "contributors": [
+    {
+      "name": "Jørgen Thorsnes",
+      "url": "https://github.com/jorgtho"
+    }
+  ],
   "dependencies": {
     "@vtfk/azure-blob-client": "^0.1.0",
     "@vtfk/logger": "^4.3.1",
