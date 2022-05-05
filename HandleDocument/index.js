@@ -8,7 +8,6 @@ module.exports = async function (context, req) {
 
   logConfig({
     teams: {
-      url: 'https://vtfk.webhook.office.com/webhookb2/bae00a3a-bbb1-4aff-934d-8f721624bcbf@08f3813c-9f29-482f-9aec-16ef7cbf477a/IncomingWebhook/59a225627d6c4085afdd2724fc1b89a8/2f0d6c10-478b-4eec-8e46-fb15f3059505',
       onlyInProd: false
     }
   })
