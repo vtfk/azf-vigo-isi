@@ -6,12 +6,6 @@ const { RETRY_INTERVAL_HOURS, RETRY_MAX_COUNT } = require('../config')
 module.exports = async function (context, req) {
   const { blobId } = context.bindingData
 
-  logConfig({
-    teams: {
-      onlyInProd: false
-    }
-  })
-
   // get blob and blob type
   const blobPath = `queue/${blobId}`
   const errorBlobPath = `error/${blobId}`
@@ -20,12 +14,19 @@ module.exports = async function (context, req) {
   const blobType = blobContent.Dokumentelement.Dokumenttype
   blobContent.flow = blobContent.flow || {}
 
+  logConfig({
+    suffix: `${blobContent.Dokumentelement.Dokumenttype} - ${blobContent.Dokumentelement.DokumentId}`,
+    teams: {
+      onlyInProd: false
+    }
+  })
+
   // determine flow type
   let flow
   try {
     flow = require(`../lib/flows/${blobType}`)
   } catch (error) {
-    await logger('error', [blobType, 'flow not found', error])
+    await logger('error', ['flow not found', error])
   }
 
   // call flow type
@@ -75,7 +76,7 @@ module.exports = async function (context, req) {
       }
     }
   } catch (error) {
-    await logger('error', [blobType, 'flow failed to run successfully'])
+    await logger('error', ['flow failed to run successfully'])
     return azfHandleError(error, context, req)
   }
 }
