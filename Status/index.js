@@ -15,6 +15,16 @@ module.exports = async function (context, req) {
 
   try {
     logger('info', ['Status', 'start'])
+    if (DEMO) {
+      logger('info', ['Status', 'finish'])
+      return {
+        status: 200,
+        body: {
+          message: 'DEMO'
+        }
+      }
+    }
+
     const { docId, ssn } = req.body
     const response = await updateStatus(docId, ssn)
     const status = hasData(response) ? hasException(response) ? 218 : 500 : 200 // TODO: Figure out which 4xx code Logic App retry policy doesn't act on
