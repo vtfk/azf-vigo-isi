@@ -16,9 +16,9 @@ module.exports = async function (context, req) {
   const blobPath = `queue/${blobId}`
   const errorBlobPath = `error/${blobId}`
   const { data } = await get(blobPath)
-  let blobData = typeof data === 'string' ? JSON.parse(data) : data
-  const blobType = blobData.Dokumentelement.Dokumenttype
-  blobData.flow = blobData.flow || {}
+  let blobContent = typeof data === 'string' ? JSON.parse(data) : data
+  const blobType = blobContent.Dokumentelement.Dokumenttype
+  blobContent.flow = blobContent.flow || {}
 
   // determine flow type
   let flow
@@ -30,9 +30,9 @@ module.exports = async function (context, req) {
 
   // call flow type
   try {
-    blobData = await flow(blobData)
+    blobContent = await flow(blobContent)
 
-    if (blobData.flow.status === 'finished') {
+    if (blobContent.flow.status === 'finished') {
       // remove blob
       await remove(blobPath)
       return {
@@ -43,16 +43,16 @@ module.exports = async function (context, req) {
       }
     } else {
       // update blob with new data
-      blobData.retryCount++
-      if (blobData.retryCount > RETRY_MAX_COUNT) {
+      blobContent.retryCount++
+      if (blobContent.retryCount > RETRY_MAX_COUNT) {
         // move to error
-        await save(errorBlobPath, JSON.stringify(blobData))
+        await save(errorBlobPath, JSON.stringify(blobContent))
         await remove(blobPath)
         return {
           status: 429,
           body: {
             message: 'RetryCount exceeded. Blob moved to error',
-            retryCount: blobData.retryCount,
+            retryCount: blobContent.retryCount,
             maxRetries: RETRY_MAX_COUNT
           }
         }
@@ -60,21 +60,22 @@ module.exports = async function (context, req) {
 
       // update in queue
       const now = new Date()
-      const nextRun = new Date(now.setTime(now.getTime() + (60 * 60 * 1000 * RETRY_INTERVAL_HOURS * blobData.retryCount)))
-      blobData.nextRun = nextRun
-      await save(blobPath, JSON.stringify(blobData))
+      // (RETRY_INTERVAL_HOURS * retryCount) hours in the future
+      const nextRun = new Date(now.setTime(now.getTime() + (60 * 60 * 1000 * RETRY_INTERVAL_HOURS * blobContent.retryCount)))
+      blobContent.nextRun = nextRun
+      await save(blobPath, JSON.stringify(blobContent))
       return {
         status: 406,
         body: {
           message: 'RetryCount incremented. Will try again',
           nextRun,
-          retryCount: blobData.retryCount,
+          retryCount: blobContent.retryCount,
           maxRetries: RETRY_MAX_COUNT
         }
       }
     }
   } catch (error) {
-    await logger('error', [blobType, 'Flow failed to run successfully'])
+    await logger('error', [blobType, 'flow failed to run successfully'])
     return azfHandleError(error, context, req)
   }
 }
