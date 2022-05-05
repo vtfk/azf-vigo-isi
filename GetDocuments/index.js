@@ -37,8 +37,15 @@ module.exports = async function (context, req) {
       // create some blobs in queue
       const demoResponse = []
       const files = readdirSync('./mock')
-      files.forEach(file => demoResponse.push(require(`../mock/${file}`)))
+      files.forEach(file => {
+        try {
+          demoResponse.push(require(`../mock/${file}`))
+        } catch (error) {
+          logger('error', ['GetDocuments', 'moron', `mock file ${file} is invalid 🤦‍♂️`])
+        }
+      })
       response = demoResponse
+      logger('info', ['GetDocuments', `${response.length} mock files will be uploaded to blob storage`])
     } else {
       const { uuid, counter, docCount, county } = await getVariables()
       const request = documentsRequest(uuid, counter, docCount, county)
@@ -65,7 +72,7 @@ module.exports = async function (context, req) {
       }
     }
 
-    // dytt alle dokumenter til blob
+    // save all blobs to storage
     let blobbedCount = 0
     for (let document of response) {
       try {
@@ -84,6 +91,7 @@ module.exports = async function (context, req) {
         }
 
         await save(`queue/${blobName}.json`, JSON.stringify(document, null, 2))
+        logger('info', ['GetDocuments', `${blobName} successfully uploaded to blob storage`])
         blobbedCount++
       } catch (error) {
         logger('error', ['GetDocuments', 'upload to blob failed', document.Dokumentelement.Dokumenttype, document.Dokumentelement.DokumentId, document.Fodselsnummer])
