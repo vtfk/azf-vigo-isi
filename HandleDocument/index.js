@@ -1,11 +1,17 @@
 const { logger, logConfig } = require('@vtfk/logger')
 const { get, save, remove } = require('@vtfk/azure-blob-client')
 const { azfHandleError } = require('@vtfk/responsehandlers')
-const { RETRY_INTERVAL_HOURS, RETRY_MAX_COUNT } = require('../config')
+const { DEMO, DISABLE_LOGGING, RETRY_INTERVAL_HOURS, RETRY_MAX_COUNT } = require('../config')
 
 module.exports = async function (context, req) {
   const { blobId } = context.bindingData
 
+  logConfig({
+    prefix: DEMO ? 'DEMO' : '',
+    remote: {
+      disabled: DISABLE_LOGGING
+    }
+  })
   // get blob and blob type
   const blobPath = `queue/${blobId}`
   const errorBlobPath = `error/${blobId}`
