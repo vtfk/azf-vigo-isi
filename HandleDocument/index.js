@@ -28,7 +28,7 @@ module.exports = async function (context, req) {
   blobContent.flow = blobContent.flow || {}
 
   logConfig({
-    suffix: `${blobContent.Dokumentelement.Dokumenttype} - ${blobContent.Dokumentelement.DokumentId}`,
+    suffix: `${blobContent.Dokumentelement.Dokumenttype} - ${blobContent.Dokumentelement.DokumentId}`
   })
 
   // determine flow type
