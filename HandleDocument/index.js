@@ -37,6 +37,7 @@ module.exports = async function (context, req) {
     flow = require(`../lib/flows/${blobType}`)
   } catch (error) {
     await logger('error', [blobType, 'flow not found', error])
+    return azfHandleError(error, context, req)
   }
 
   // call flow type
