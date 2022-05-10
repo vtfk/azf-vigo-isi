@@ -12,19 +12,23 @@ module.exports = async function (context, req) {
       disabled: DISABLE_LOGGING
     }
   })
+
   // get blob and blob type
   const blobPath = `queue/${blobId}`
   const errorBlobPath = `error/${blobId}`
-  const { data } = await get(blobPath)
-  let blobContent = typeof data === 'string' ? JSON.parse(data) : data
+  let blobContent
+  try {
+    const { data } = await get(blobPath)
+    blobContent = typeof data === 'string' ? JSON.parse(data) : data
+  } catch (error) {
+    await logger('error', ['failed to get blob', error])
+    return azfHandleError(error, context, req)
+  }
   const blobType = blobContent.Dokumentelement.Dokumenttype
   blobContent.flow = blobContent.flow || {}
 
   logConfig({
     suffix: `${blobContent.Dokumentelement.Dokumenttype} - ${blobContent.Dokumentelement.DokumentId}`,
-    teams: {
-      onlyInProd: false
-    }
   })
 
   // determine flow type
