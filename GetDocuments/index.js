@@ -5,7 +5,6 @@ const { DEMO, DISABLE_LOGGING } = require('../config')
 const { documentsRequest } = require('../lib/generate-request')
 const getDocuments = require('../lib/isi-lokal')
 const { getVariables, updateVariables } = require('../lib/handle-variables')
-const { createJob } = require('../lib/e18')
 
 const isEmptyDocument = documents => documents.length === 1 && documents[0].Fodselsnummer === '' && documents[0].Dokumentelement.Dokumenttype === ''
 
@@ -15,6 +14,11 @@ module.exports = async function (context, req) {
     remote: {
       disabled: DISABLE_LOGGING
     }
+  })
+
+  // HandleDocument sets suffix, and it is "inherited" here, so we reset it.
+  logConfig({
+    suffix: ''
   })
 
   try {
@@ -83,11 +87,6 @@ module.exports = async function (context, req) {
           ...document,
           nextRun: '',
           retryCount: 0
-        }
-        // create e18 job for this document
-        const jobId = await createJob(blobName)
-        if (jobId) {
-          document.e18JobId = jobId
         }
 
         await save(`queue/${blobName}.json`, JSON.stringify(document, null, 2))
