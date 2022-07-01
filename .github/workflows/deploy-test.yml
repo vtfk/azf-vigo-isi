@@ -22,7 +22,6 @@ on:
   workflow_dispatch:
   push:
     branches: '**'
-  pull_request:
 
 env:
   AZURE_FUNCTIONAPP_NAME: test-func-vigo-isi    # set this to your application's name
