@@ -27,5 +27,6 @@ module.exports = {
     SYSTEM: process.env.E18_JOB_SYSTEM,
     PROJECT_ID: Number.isInteger(Number.parseInt(process.env.E18_JOB_PROJECT_ID)) ? Number.parseInt(process.env.E18_JOB_PROJECT_ID) : 0,
     TYPE: process.env.E18_JOB_TYPE
-  }
+  },
+  FILE_FORMATS: (process.env.FILE_FORMATS && process.env.FILE_FORMATS.split(',')) || ['pdf', 'docx', 'png', 'jpg']
 }
