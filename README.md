@@ -64,8 +64,11 @@ module.exports = async blobContent => {
       useStudentName: true, // adds studentName to UnofficialTitle when archiving
       determineFileExt: true // does not assume the file is pdf - but finds the fileExt and uses that instead.
     },
-    signOff: true, // signs off documents in the archive (Used when "Innkommende dokument" is not to be "saksbehandlet" in P360)
-    statusVigo: true, // Sets status on the given document to "Arkivert" in VIGO
+    signOff: true, // signs off documents in the archive (Used when "Innkommende dokument" is not to be "saksbehandlet" in P360) (Can not be used in combination with response-letter)
+    statusVigo: true, // Sets status on the given document to "Arkivert" in VIGO,
+    archiveResponseLetter: true, // Uses the azf-archive-template vigo-<DOKUMENTTYPE>-response, which creates a pdf, and archives it. Also handles address block/invalid address
+    sendResponseLetter: true, // Dispatches the reponse letter to SvarUT
+    signOffResponseLetter: true, // Signs off the original <DOKUMENTTYPE> with "Besvart med utgående dokument <DOKUMENTTYPE>-reponse-letter" 
     e18Stats: true // Add statistics to E18
   })
 }
