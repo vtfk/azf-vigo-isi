@@ -21,7 +21,7 @@
     "@vtfk/azure-blob-client": "0.1.6",
     "@vtfk/logger": "4.3.2",
     "@vtfk/responsehandlers": "1.0.25",
-    "axios": "0.27.2",
+    "axios": "0.28.0",
     "file-type": "16.5.4",
     "mssql": "8.1.4",
     "uuid": "8.3.2",
